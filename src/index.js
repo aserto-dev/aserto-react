@@ -20,6 +20,10 @@ export const AsertoProvider = ({
       setLoading(false);
     };
 
+    if (!asertoClient) {
+      initAserto();
+    }
+
     if (asertoClient) {
       load();
     }
@@ -28,15 +32,16 @@ export const AsertoProvider = ({
   const initAserto = useCallback(() => {
     async function createClient() {
       // if we don't have an access token, try to obtain one
-      if (getToken && !token) {
-        const accessToken = await getToken();
+      let accessToken = token;
+      if (getToken && !accessToken) {
+        accessToken = await getToken();
         if (accessToken) {
           setToken(accessToken);
         } 
       }
 
-      if (token) {
-        const asertoFromHook = await createAsertoClient(token);
+      if (accessToken) {
+        const asertoFromHook = await createAsertoClient(accessToken);
         setAsertoClient(asertoFromHook);
         loadAuthzMap();
       }
