@@ -27,27 +27,25 @@ export const AsertoProvider = ({
 
   const initAserto = useCallback(() => {
     async function createClient() {
-      const asertoFromHook = await createAsertoClient(token);
-      setAsertoClient(asertoFromHook);
+      // if we don't have an access token, try to obtain one
+      if (getToken && !token) {
+        const accessToken = await getToken();
+        if (accessToken) {
+          setToken(accessToken);
+        } 
+      }
 
-      loadAuthzMap();
-
-      setLoading(false);
+      if (token) {
+        const asertoFromHook = await createAsertoClient(token);
+        setAsertoClient(asertoFromHook);
+        loadAuthzMap();
+      }
     };
 
-    // if we don't have an access token, try to obtain one
-    if (getToken && !token) {
-      const accessToken = await getToken();
-      if (accessToken) {
-        setToken(accessToken);
-      }
-    }
-
     // if the client hasn't been created yet, create it now
-    if (!asertoClient && token) {
+    if (!asertoClient) {
       createClient();
     }
-
   }, [getToken, token]);
 
   useEffect(() => {
