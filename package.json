@@ -1,0 +1,25 @@
+{
+  "name": "@aserto/aserto-react",
+  "version": "0.1.0",
+  "description": "Aserto React SDK",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aserto-dev/aserto-react.git"
+  },
+  "homepage": "https://github.com/aserto-dev/aserto-react#readme",
+  "keywords": [
+    "aserto",
+    "authorization",
+    "react",
+    "SPA authorization"
+  ],
+  "author": "Aserto",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@aserto/aserto-spa-js": "^0.1.1"
+  }
+}
