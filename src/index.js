@@ -21,7 +21,7 @@ export const AsertoProvider = ({
     };
 
     if (!asertoClient) {
-      initAserto();
+      //initAserto();
     }
 
     if (asertoClient) {
@@ -29,6 +29,7 @@ export const AsertoProvider = ({
     }
   }, [asertoClient]);
 
+  /*
   const initAserto = useCallback(() => {
     async function createClient() {
       // if we don't have an access token, try to obtain one
@@ -57,6 +58,7 @@ export const AsertoProvider = ({
     initAserto();
     // eslint-disable-next-line
   }, [getToken, token]);
+*/
 
   return (
     <AsertoContext.Provider
