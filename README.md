@@ -27,12 +27,8 @@ Configure the SDK by wrapping your application in `AsertoProvider`. If using in 
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { AsertoProvider } from '@aserto/aserto-react'
+import { Auth0Provider } from '@auth0/auth0-react'
 import App from './App'
-
-// this example initializes the Aserto Provider with a getToken 
-// function supplied by the Auth0 React SDK
-import { Auth0Provider, useAuth0 } from '@auth0/auth0-react'
-const { getAccessTokenSilently } = useAuth0();
 
 ReactDOM.render(
   <Auth0Provider
@@ -40,9 +36,7 @@ ReactDOM.render(
     clientId="YOUR_AUTH0_CLIENT_ID"
     redirectUri={window.location.origin}
   >
-    <AsertoProvider
-      getToken={getAccessTokenSilently}
-    >
+    <AsertoProvider>
       <App />
     </AsertoProvider>
   </Auth0Provider>,
@@ -50,12 +44,13 @@ ReactDOM.render(
 );
 ```
 
-Use the `useAserto` hook in your components to access authorization map state (`loading`, `authzMap`) or to force it to load (`loadAuthzMap`):
+Use the `useAserto` hook in your components to load the authorization map (`loadAuthzMap`) or to access its state (`loading`, `authzMap`):
 
 ```jsx
 // src/App.js
 import React from 'react'
 import { useAserto } from '@aserto/aserto-react'
+import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
   const {
@@ -64,17 +59,25 @@ function App() {
     loadAuthzMap
   } = useAserto();
 
+  // the Aserto hook needs a valid access token. 
+  // to use Auth0 to return an access token, you can use the following:
+  const { getAccessTokenSilently } = useAuth0();
+  const accessToken = getAccessTokenSilently();
+
   if (loading) {
     return <div>Loading...</div>;
   }
 
   if (!authzMap) {
-    loadAuthzMap();
+    loadAuthzMap(accessToken);
     return <div>Loading...</div>;
   } else {
     return (
       <div>
-        { authzMap }
+        { 
+          // display the authz map as a string 
+          authzMap 
+        }
       </div>
     );
   } 
