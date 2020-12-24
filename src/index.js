@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useCallback } from 'react'
+import React, { useState, useContext, useCallback } from 'react'
 import createAsertoClient from '@aserto/aserto-spa-js'
 
 export const AsertoContext = React.createContext();
@@ -9,9 +9,9 @@ export const AsertoProvider = ({
   const [asertoClient, setAsertoClient] = useState();
   const [loading, setLoading] = useState(true);
   const [token, setToken] = useState();
-  const [authzMap, setAuthzMap] = useState();
+  const [accessMap, setAccessMap] = useState();
 
-  const loadAuthzMap = useCallback((accessToken) => {
+  const loadAccessMap = useCallback((accessToken) => {
     async function load() {
       setLoading(true);
 
@@ -25,8 +25,8 @@ export const AsertoProvider = ({
       setAsertoClient(asertoFromHook);
 
       // retrieve authorization map
-      const map = await asertoFromHook.getAuthorizationMap();
-      setAuthzMap(map);
+      const map = await asertoFromHook.getAccessMap();
+      setAccessMap(map);
 
       setLoading(false);
     };
@@ -38,8 +38,8 @@ export const AsertoProvider = ({
     <AsertoContext.Provider
       value={{
         loading,
-        authzMap,
-        loadAuthzMap
+        accessMap,
+        loadAccessMap
       }}
     >
       {children}
