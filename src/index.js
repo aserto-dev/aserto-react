@@ -10,19 +10,23 @@ export const AsertoProvider = ({
   const [loading, setLoading] = useState(false);
   const [accessMap, setAccessMap] = useState();
 
-  const init = async (initOptions) => {
-      setLoading(true);
-      const asertoFromHook = await createAsertoClient(initOptions);
-      setAsertoClient(asertoFromHook);
-      setLoading(false);
-  }
-
-  const loadAccessMap = async () => {
+  const init = useCallback((initOptions) => {
     setLoading(true);
-    const map = await asertoClient.getAccessMap();
-    setAccessMap(map);
+    const asertoFromHook = createAsertoClient(initOptions);
+    setAsertoClient(asertoFromHook);
     setLoading(false);
-  }
+  }, []);
+
+  const loadAccessMap = useCallback(async () => {
+    if (!asertoClient) {
+      throw new Error('aserto-react: must call init() before loadAccessMap()');
+    } else {
+      setLoading(true);
+      const map = await asertoClient.getAccessMap();
+      setAccessMap(map);
+      setLoading(false);
+    }
+  }, [asertoClient]);
 
   /*
   const initCallback = useCallback((...p) => {

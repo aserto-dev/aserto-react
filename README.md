@@ -69,8 +69,8 @@ function App() {
     async function load() {
       const token = await getAccessTokenSilently();
       if (token) {
-        await init({ accessToken: token });
-        loadAccessMap();
+        init({ accessToken: token });
+        await loadAccessMap();
       }
     }
 
@@ -105,11 +105,8 @@ export default App
 ### Initialize the Aserto client
 
 ```js
-  const { 
-    init
-  } = useAserto();
-
-await init({
+const { init } = useAserto();
+init({
   serviceUrl: 'http://service-url', // defaults to windows.location.origin
   endpointName: '/__accessmap', // defaults to '/__accessmap',
   accessToken: '<VALID ACCESS TOKEN>' // REQUIRED
@@ -117,10 +114,8 @@ await init({
 ```
 
 ### Get the access map for a service that exposes it
-```js
-  const { 
-    loadAccessMap
-  } = useAserto();
 
+```js
+const { loadAccessMap } = useAserto();
 await loadAccessMap();
 ```
