@@ -16,7 +16,7 @@ export const AsertoProvider = ({
       setLoading(true);
 
       // always refresh the stored access token
-      if (!token || TRUE) {
+      if (!token || true) {
         setToken(accessToken);
       }
 
