@@ -27,7 +27,7 @@
     "react": "^16.8.0"
   },
   "dependencies": {
-    "@aserto/aserto-spa-js": "^0.1.10"
+    "@aserto/aserto-spa-js": "^0.1.11"
   },
   "devDependencies": {
     "@babel/cli": "^7.2.3",
