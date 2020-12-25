@@ -17,6 +17,14 @@ export const AsertoProvider = ({
       setLoading(false);
   }
 
+  const loadAccessMap = async () => {
+    setLoading(true);
+    const map = await asertoClient.getAccessMap();
+    setAccessMap(map);
+    setLoading(false);
+  }
+
+  /*
   const initCallback = useCallback((...p) => {
     async function callInit(...p) {
       return init(...p);
@@ -25,14 +33,7 @@ export const AsertoProvider = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, []);
 
-  const load = async () => {
-    setLoading(true);
-    const map = await asertoClient.getAccessMap();
-    setAccessMap(map);
-    setLoading(false);
-  }
-
-  const loadCallback = useCallback(() => {
+  const loadAccessMapCallback = useCallback(() => {
     async function callLoad() {
       return load();
     }
@@ -43,14 +44,15 @@ export const AsertoProvider = ({
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, []);
+  */
 
   return (
     <AsertoContext.Provider
       value={{
         loading,
         accessMap,
-        init: initCallback,
-        loadAccessMap: loadCallback
+        init,
+        loadAccessMap
       }}
     >
       {children}
