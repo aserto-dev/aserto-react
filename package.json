@@ -1,6 +1,6 @@
 {
   "name": "@aserto/aserto-react",
-  "version": "0.1.22",
+  "version": "0.1.23",
   "description": "Aserto React SDK",
   "main": "dist/index.js",
   "scripts": {
