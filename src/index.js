@@ -21,7 +21,7 @@ export const AsertoProvider = ({
       }
 
       // create a new aserto client
-      const asertoFromHook = await createAsertoClient(accessToken);
+      const asertoFromHook = await createAsertoClient({ token: accessToken });
       setAsertoClient(asertoFromHook);
 
       // retrieve authorization map
