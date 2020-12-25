@@ -10,45 +10,47 @@ export const AsertoProvider = ({
   const [loading, setLoading] = useState(false);
   const [accessMap, setAccessMap] = useState();
 
-  const init = useCallback((initOptions) => {
-    async function initAserto() {
+  const init = async (initOptions) => {
       setLoading(true);
-
-      // create a new aserto client
       const asertoFromHook = await createAsertoClient(initOptions);
       setAsertoClient(asertoFromHook);
-
       setLoading(false);
-    };
+  }
 
-    initAserto();    
+  const initCallback = useCallback((...p) => {
+    async function callInit(...p) {
+      return init(...p);
+    }
+    return callInit(...p);
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, []);
 
-  const loadAccessMap = useCallback(() => {
-    async function load() {
-      setLoading(true);
+  const load = async () => {
+    setLoading(true);
+    const map = await asertoClient.getAccessMap();
+    setAccessMap(map);
+    setLoading(false);
+  }
 
-      // retrieve access map
-      const map = await asertoClient.getAccessMap();
-      setAccessMap(map);
-
-      setLoading(false);
-    };
-
-    if (!asertoClient && !loading) {
+  const loadCallback = useCallback(() => {
+    async function callLoad() {
+      return load();
+    }
+    if (!asertoClient) {
       throw new Error('aserto-react: must call init() before loadAccessMap()');
     } else {
-      load();
+      return callLoad();    
     }
-  }, [asertoClient, loading]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps  
+  }, []);
 
   return (
     <AsertoContext.Provider
       value={{
         loading,
         accessMap,
-        init,
-        loadAccessMap
+        init: initCallback,
+        loadAccessMap: loadCallback
       }}
     >
       {children}
