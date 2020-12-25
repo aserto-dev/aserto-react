@@ -7,38 +7,47 @@ export const AsertoProvider = ({
   children
 }) => {
   const [asertoClient, setAsertoClient] = useState();
-  const [loading, setLoading] = useState(true);
-  const [token, setToken] = useState();
+  const [loading, setLoading] = useState(false);
   const [accessMap, setAccessMap] = useState();
 
-  const loadAccessMap = useCallback((accessToken) => {
+  const init = useCallback((initOptions) => {
+    async function initAserto() {
+      setLoading(true);
+
+      // create a new aserto client
+      const asertoFromHook = await createAsertoClient(initOptions);
+      setAsertoClient(asertoFromHook);
+
+      setLoading(false);
+    };
+
+    initAserto();    
+  }, []);
+
+  const loadAccessMap = useCallback(() => {
     async function load() {
       setLoading(true);
 
-      // always refresh the stored access token
-      if (!token || true) {
-        setToken(accessToken);
-      }
-
-      // create a new aserto client
-      const asertoFromHook = await createAsertoClient({ token: accessToken });
-      setAsertoClient(asertoFromHook);
-
-      // retrieve authorization map
-      const map = await asertoFromHook.getAccessMap();
+      // retrieve access map
+      const map = await asertoClient.getAccessMap();
       setAccessMap(map);
 
       setLoading(false);
     };
 
-    load();
-  }, [asertoClient]);
+    if (!asertoClient && !loading) {
+      throw new Error('aserto-react: must call init() before loadAccessMap()');
+    } else {
+      load();
+    }
+  }, [asertoClient, loading]);
 
   return (
     <AsertoContext.Provider
       value={{
         loading,
         accessMap,
+        init,
         loadAccessMap
       }}
     >

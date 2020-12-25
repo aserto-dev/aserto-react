@@ -44,7 +44,7 @@ ReactDOM.render(
 );
 ```
 
-Use the `useAserto` hook in your components to load the authorization map (`loadAuthzMap`) or to access its state (`loading`, `authzMap`):
+Use the `useAserto` hook in your components to initialize (`init`), load the access map (`loadAccessMap`) or to access its state (`loading`, `accessMap`):
 
 ```jsx
 // src/App.js
@@ -55,28 +55,44 @@ import { useAuth0 } from '@auth0/auth0-react'
 function App() {
   const {
     loading,
-    authzMap,
-    loadAuthzMap
+    accessMap,
+    init,
+    loadAccessMap
   } = useAserto();
 
   // the Aserto hook needs a valid access token. 
   // to use Auth0 to return an access token, you can use the following:
-  const { getAccessTokenSilently } = useAuth0();
-  const accessToken = getAccessTokenSilently();
+  const { isLoading, error, isAuthenticated, getAccessTokenSilently } = useAuth0();
+
+  // use an effect to load the Aserto access map 
+  useEffect(() => {
+    async function load() {
+      const token = await getAccessTokenSilently();
+      if (token) {
+        await init({ accessToken: token });
+        loadAccessMap();
+      }
+    }
+
+    // load the access map when Auth0 has finished initializing
+    if (!error && !isLoading && isAuthenticated) {
+      load();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLoading, isAuthenticated, error]); 
 
   if (loading) {
     return <div>Loading...</div>;
   }
 
-  if (!authzMap) {
-    loadAuthzMap(accessToken);
+  if (!accessMap) {
     return <div>Loading...</div>;
   } else {
     return (
       <div>
         { 
-          // display the authz map as a string 
-          authzMap 
+          // display the access map as a string 
+          accessMap 
         }
       </div>
     );
@@ -84,4 +100,27 @@ function App() {
 }
 
 export default App
+```
+
+### Initialize the Aserto client
+
+```js
+  const { 
+    init
+  } = useAserto();
+
+await init({
+  serviceUrl: 'http://service-url', // defaults to windows.location.origin
+  endpointName: '/__accessmap', // defaults to '/__accessmap',
+  accessToken: '<VALID ACCESS TOKEN>' // REQUIRED
+});
+```
+
+### Get the access map for a service that exposes it
+```js
+  const { 
+    loadAccessMap
+  } = useAserto();
+
+await loadAccessMap();
 ```
