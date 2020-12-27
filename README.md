@@ -44,7 +44,7 @@ ReactDOM.render(
 );
 ```
 
-Use the `useAserto` hook in your components to initialize (`init`), load the access map (`loadAccessMap`) or to access its state (`loading`, `accessMap`):
+Use the `useAserto` hook in your components to initialize (`init`), reload the access map (`reload`) or to access its state (`loading`, `accessMap`):
 
 ```jsx
 // src/App.js
@@ -56,6 +56,7 @@ function App() {
   const {
     loading,
     accessMap,
+    resourceMap,
     init,
     loadAccessMap
   } = useAserto();
@@ -69,8 +70,7 @@ function App() {
     async function load() {
       const token = await getAccessTokenSilently();
       if (token) {
-        init({ accessToken: token });
-        await loadAccessMap();
+        await init({ accessToken: token });
       }
     }
 
@@ -86,6 +86,7 @@ function App() {
   }
 
   if (!accessMap) {
+    init();
     return <div>Loading...</div>;
   } else {
     return (
@@ -105,17 +106,76 @@ export default App
 ### Initialize the Aserto client
 
 ```js
-const { init } = useAserto();
-init({
+const { init, accessMap } = useAserto();
+await init({
   serviceUrl: 'http://service-url', // defaults to windows.location.origin
   endpointName: '/__accessmap', // defaults to '/__accessmap',
   accessToken: '<VALID ACCESS TOKEN>' // REQUIRED
 });
+
+// log the access map to the console
+console.log(accessMap);
 ```
 
-### Get the access map for a service that exposes it
+### reload()
+
+Re-load the access map for a service that exposes it. 
+
+`init()` must be called before the `reload()`.
 
 ```js
-const { loadAccessMap } = useAserto();
-await loadAccessMap();
+const { reload, accessMap } = useAserto();
+await reload();
+
+// log the access map to the console
+console.log(accessMap);
+```
+
+### resourceMap('path')
+
+Retrieves the resource map associated with a specific resource.
+
+The `path` argument is in the form `/path/to/resource`. It may contain a `{id}` component to indicate an parameter.
+
+The returned map will be in the following format: 
+```js
+{
+  get: {
+    visible: true,
+    enabled: false,
+    allowed: false
+  },
+  post: {
+    visible: true,
+    enabled: false,
+    allowed: false
+  },
+  put: {
+    //...
+  },
+  delete: {
+    //...
+  }
+}
+```
+
+Note: `init()` must be called before `resourceMap()`.
+
+```js
+const { resourceMap } = useAserto();
+const path = '/api/path';
+const resource = aserto.resourceMap(path));
+
+// use the map to retrieve visibility of an element
+const isVisible = resource.get.visible;
+
+// use the map to determine whether an update operation is enabled
+const isUpdateEnabled = resource.put.enabled;
+
+// print out access values for each verb on a resource
+for (const verb of ['get', 'post', 'put', 'delete']) {
+  for (const access of ['visible', 'enabled', 'allowed']) {
+    console.log(`${verb} ${path} ${access} is ${resource[verb][access]}`);
+  }
+}
 ```

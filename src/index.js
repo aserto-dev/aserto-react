@@ -18,15 +18,25 @@ export const AsertoProvider = ({
     setLoading(false);
   }
 
-  const loadAccessMap = async () => {
+  const reload = async () => {
     if (!asertoClient) {
-      throw new Error('aserto-react: must call init() before loadAccessMap()');
+      throw new Error('aserto-react: must call init() before reload()');
     } else {
       setLoading(true);
-      await asertoClient.loadAccessMap();
+      await asertoClient.reload();
       setAccessMap(asertoClient.accessMap());
       setLoading(false);
     }
+  }
+
+  const resourceMap = (path) => {
+    if (!asertoClient) {
+      throw new Error('aserto-react: must call init() before resourceMap()');
+    } 
+    if (!path) {
+      throw new Error('path is a required parameter');
+    }
+    return asertoClient.resourceMap(path);
   }
 
   /*
@@ -57,7 +67,8 @@ export const AsertoProvider = ({
         loading,
         accessMap,
         init,
-        loadAccessMap
+        reload,
+        resourceMap
       }}
     >
       {children}
