@@ -8,15 +8,24 @@ export const AsertoProvider = ({
 }) => {
   const [asertoClient, setAsertoClient] = useState();
   const [loading, setLoading] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
+  const [error, setError] = useState();
   const [accessMap, setAccessMap] = useState();
 
   const init = async (initOptions) => {
+    try {
     setLoading(true);
     const asertoFromHook = await createAsertoClient(initOptions);
     setAsertoClient(asertoFromHook);
     setAccessMap(asertoFromHook.accessMap());
     setLoading(false);
+    setIsLoaded(true);      
+  } catch (error) {
+    setError(error);
+    setIsLoaded(false);
+    setLoading(false);
   }
+}
 
   const reload = async () => {
     if (!asertoClient) {
@@ -68,7 +77,9 @@ export const AsertoProvider = ({
         accessMap,
         init,
         reload,
-        resourceMap
+        resourceMap,
+        isLoaded,
+        error
       }}
     >
       {children}
