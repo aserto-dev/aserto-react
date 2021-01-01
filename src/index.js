@@ -18,8 +18,8 @@ export const AsertoProvider = ({
     const asertoFromHook = await createAsertoClient(initOptions);
     setAsertoClient(asertoFromHook);
     setAccessMap(asertoFromHook.accessMap());
-    setLoading(false);
     setIsLoaded(true);      
+    setLoading(false);
   } catch (error) {
     setError(error);
     setIsLoaded(false);
