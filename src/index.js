@@ -58,26 +58,25 @@ export const AsertoProvider = ({
   }
 
   const resourceMap = (path) => {
-      if (asertoClient && path) {
-        return asertoClient.resourceMap(path);
-      }
+    if (asertoClient && path) {
+      return asertoClient.resourceMap(path);
+    }
 
-      // no client or path
-      if (throwOnError) {
-        if (!asertoClient) {
-          throw new Error('aserto-react: must call init() before resourceMap()');
-        } 
-        if (!path) {
-          throw new Error('aserto-react: path is a required parameter');
-        }
-      } else {
-        // return the default map
-        return {
-          GET: defaultMap,
-          PUT: defaultMap,
-          DELETE: defaultMap,
-          POST: defaultMap
-        }
+    // no client or path
+    if (throwOnError) {
+      if (!asertoClient) {
+        throw new Error('aserto-react: must call init() before resourceMap()');
+      } 
+      if (!path) {
+        throw new Error('aserto-react: path is a required parameter');
+      }
+    } else {
+      // return the default map
+      return {
+        GET: defaultMap,
+        PUT: defaultMap,
+        DELETE: defaultMap,
+        POST: defaultMap
       }
     }
   }
