@@ -13,39 +13,73 @@ export const AsertoProvider = ({
   const [accessMap, setAccessMap] = useState();
 
   const init = async (initOptions) => {
+    const throwOnError = initOptions.throwOnError;
+    const defaultMap = initOptions.defaultMap || {
+      visible: true,
+      enabled: true,
+      allowed: false
+    };
+
     try {
-    setLoading(true);
-    const asertoFromHook = await createAsertoClient(initOptions);
-    setAsertoClient(asertoFromHook);
-    setAccessMap(asertoFromHook.accessMap());
-    setIsLoaded(true);      
-    setLoading(false);
-  } catch (error) {
-    setError(error);
-    setIsLoaded(false);
-    setLoading(false);
+      setLoading(true);
+      const asertoFromHook = await createAsertoClient(initOptions);
+      setAsertoClient(asertoFromHook);
+      setAccessMap(asertoFromHook.accessMap());
+      setIsLoaded(true);      
+      setLoading(false);
+    } catch (error) {
+      if (throwOnError) {
+        throw error;
+      }
+      console.error(error);
+      setError(error);
+      setIsLoaded(false);
+      setLoading(false);
+    }
   }
-}
 
   const reload = async () => {
-    if (!asertoClient) {
-      throw new Error('aserto-react: must call init() before reload()');
-    } else {
-      setLoading(true);
-      await asertoClient.reload();
-      setAccessMap(asertoClient.accessMap());
+    try {
+      if (asertoClient) {
+        setLoading(true);
+        await asertoClient.reload();
+        setAccessMap(asertoClient.accessMap());
+        setLoading(false);
+      }
+    } catch (error) {
+      if (throwOnError) {
+        throw error;
+      }
+      console.error(error);
+      setError(error);
+      setIsLoaded(false);
       setLoading(false);
     }
   }
 
   const resourceMap = (path) => {
-    if (!asertoClient) {
-      throw new Error('aserto-react: must call init() before resourceMap()');
-    } 
-    if (!path) {
-      throw new Error('path is a required parameter');
+      if (asertoClient && path) {
+        return asertoClient.resourceMap(path);
+      }
+
+      // no client or path
+      if (throwOnError) {
+        if (!asertoClient) {
+          throw new Error('aserto-react: must call init() before resourceMap()');
+        } 
+        if (!path) {
+          throw new Error('aserto-react: path is a required parameter');
+        }
+      } else {
+        // return the default map
+        return {
+          GET: defaultMap,
+          PUT: defaultMap,
+          DELETE: defaultMap,
+          POST: defaultMap
+        }
+      }
     }
-    return asertoClient.resourceMap(path);
   }
 
   /*
