@@ -58,7 +58,7 @@ function App() {
     accessMap,
     resourceMap,
     init,
-    loadAccessMap
+    reload
   } = useAserto();
 
   // the Aserto hook needs a valid access token. 
@@ -86,7 +86,6 @@ function App() {
   }
 
   if (!accessMap) {
-    init();
     return <div>Loading...</div>;
   } else {
     return (
@@ -110,7 +109,13 @@ const { init, accessMap } = useAserto();
 await init({
   serviceUrl: 'http://service-url', // defaults to windows.location.origin
   endpointName: '/__accessmap', // defaults to '/__accessmap',
-  accessToken: '<VALID ACCESS TOKEN>' // REQUIRED
+  accessToken: '<VALID ACCESS TOKEN>', // REQUIRED
+  throwOnError: false, // if true, re-throws errors; defaults to false
+  defaultMap: { // an optional default resource map 
+    visible: true,
+    enabled: true,
+    allowed: false
+  }
 });
 
 // log the access map to the console
@@ -135,25 +140,25 @@ console.log(accessMap);
 
 Retrieves the resource map associated with a specific resource.
 
-The `path` argument is in the form `/path/to/resource`. It may contain a `{id}` component to indicate an parameter.
+The `path` argument is in the form `/path/to/resource`. It may contain a `__id` component to indicate an parameter - for example, `/cars/__id`.
 
 The returned map will be in the following format: 
 ```js
 {
-  get: {
+  GET: {
     visible: true,
     enabled: false,
     allowed: false
   },
-  post: {
+  POST: {
     visible: true,
     enabled: false,
     allowed: false
   },
-  put: {
+  PUT: {
     //...
   },
-  delete: {
+  DELETE: {
     //...
   }
 }
@@ -167,13 +172,13 @@ const path = '/api/path';
 const resource = aserto.resourceMap(path));
 
 // use the map to retrieve visibility of an element
-const isVisible = resource.get.visible;
+const isVisible = resource.GET.visible;
 
 // use the map to determine whether an update operation is enabled
-const isUpdateEnabled = resource.put.enabled;
+const isUpdateEnabled = resource.PUT.enabled;
 
 // print out access values for each verb on a resource
-for (const verb of ['get', 'post', 'put', 'delete']) {
+for (const verb of ['GET', 'POST', 'PUT', 'DELETE']) {
   for (const access of ['visible', 'enabled', 'allowed']) {
     console.log(`${verb} ${path} ${access} is ${resource[verb][access]}`);
   }
