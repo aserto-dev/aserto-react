@@ -54,11 +54,13 @@ import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
   const {
-    loading,
-    accessMap,
-    resourceMap,
-    init,
-    reload
+    loading,     // true while the state is loading
+    isLoaded,    // true if the accessMap was loaded
+    error,       // error object (if initOptions.throwOnError is false)
+    accessMap,   // access map
+    resourceMap, // resourceMap() function (see below)
+    init,        // init() function (see below)
+    reload       // reload() function (see below)
   } = useAserto();
 
   // the Aserto hook needs a valid access token. 
@@ -102,16 +104,18 @@ function App() {
 export default App
 ```
 
-### Initialize the Aserto client
+### init()
+
+Initialize the Aserto client.
 
 ```js
 const { init, accessMap } = useAserto();
 await init({
   serviceUrl: 'http://service-url', // defaults to windows.location.origin
-  endpointName: '/__accessmap', // defaults to '/__accessmap',
+  endpointName: '/__accessmap', // defaults to '/__accessmap'
   accessToken: '<VALID ACCESS TOKEN>', // REQUIRED
-  throwOnError: false, // if true, re-throws errors; defaults to false
-  defaultMap: { // an optional default resource map 
+  throwOnError: true, // true: re-throw errors. false: set error object. defaults to true.
+  defaultMap: { // an optional default resource map (default values below)
     visible: true,
     enabled: true,
     allowed: false

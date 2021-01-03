@@ -13,7 +13,7 @@ export const AsertoProvider = ({
   const [accessMap, setAccessMap] = useState();
 
   const init = async (initOptions) => {
-    const throwOnError = initOptions.throwOnError;
+    const throwOnError = initOptions.throwOnError || true;
     const defaultMap = initOptions.defaultMap || {
       visible: true,
       enabled: true,
