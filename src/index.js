@@ -7,7 +7,7 @@ export const AsertoProvider = ({
   children
 }) => {
   const [asertoClient, setAsertoClient] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState();
   const [accessMap, setAccessMap] = useState();
