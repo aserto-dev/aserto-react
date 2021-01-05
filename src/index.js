@@ -33,13 +33,12 @@ export const AsertoProvider = ({
       setIsLoaded(true);      
       setLoading(false);
     } catch (error) {
+      setError(error.message);
+      setIsLoaded(false);
+      setLoading(false);
       if (throwOnError) {
         throw error;
       }
-      console.error(error);
-      setError(error);
-      setIsLoaded(false);
-      setLoading(false);
     }
   }
 
