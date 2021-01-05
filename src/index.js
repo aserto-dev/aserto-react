@@ -11,8 +11,8 @@ export const AsertoProvider = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState();
   const [accessMap, setAccessMap] = useState();
-  const throwOnError = initOptions.throwOnError || true;
-  const defaultMap = initOptions.defaultMap || {
+  let throwOnError = true;
+  let defaultMap = {
     visible: true,
     enabled: true,
     allowed: false
@@ -20,6 +20,12 @@ export const AsertoProvider = ({
 
   const init = async (initOptions) => {
     try {
+      throwOnError = initOptions.throwOnError || true;
+      defaultMap = initOptions.defaultMap || {
+        visible: true,
+        enabled: true,
+        allowed: false
+      };
       setLoading(true);
       const asertoFromHook = await createAsertoClient(initOptions);
       setAsertoClient(asertoFromHook);
