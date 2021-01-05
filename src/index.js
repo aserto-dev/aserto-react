@@ -11,15 +11,14 @@ export const AsertoProvider = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState();
   const [accessMap, setAccessMap] = useState();
+  const throwOnError = initOptions.throwOnError || true;
+  const defaultMap = initOptions.defaultMap || {
+    visible: true,
+    enabled: true,
+    allowed: false
+  };
 
   const init = async (initOptions) => {
-    const throwOnError = initOptions.throwOnError || true;
-    const defaultMap = initOptions.defaultMap || {
-      visible: true,
-      enabled: true,
-      allowed: false
-    };
-
     try {
       setLoading(true);
       const asertoFromHook = await createAsertoClient(initOptions);
