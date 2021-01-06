@@ -20,8 +20,8 @@ export const AsertoProvider = ({
 
   const init = async (initOptions) => {
     try {
-      if (initOptions && initOptions.throwOnError) {
-        setThrowOnError(initOptions.throwOnError);
+      if (initOptions && initOptions.throwOnError == false) {
+        setThrowOnError(false);
       }
       if (initOptions && initOptions.defaultMap) {
         setDefaultMap(initOptions.defaultMap);
