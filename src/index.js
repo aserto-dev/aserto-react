@@ -42,11 +42,11 @@ export const AsertoProvider = ({
     }
   }
 
-  const reload = async () => {
+  const reload = async (headers) => {
     try {
       if (asertoClient) {
         setLoading(true);
-        await asertoClient.reload();
+        await asertoClient.reload(headers);
         setAccessMap(asertoClient.accessMap());
         setLoading(false);
       }
