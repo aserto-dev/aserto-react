@@ -1,4 +1,5 @@
-import React, { useState, useContext, useCallback } from 'react'
+//import React, { useState, useContext, useCallback } from 'react'
+import React, { useState, useContext } from 'react'
 import createAsertoClient from '@aserto/aserto-spa-js'
 
 export const AsertoContext = React.createContext();
@@ -11,11 +12,11 @@ export const AsertoProvider = ({
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState();
   const [accessMap, setAccessMap] = useState();
+  const [identity, setIdentity] = useState();
   const [throwOnError, setThrowOnError] = useState(true);
   const [defaultMap, setDefaultMap] = useState({
     visible: true,
-    enabled: true,
-    allowed: false
+    enabled: true
   });
 
   const init = async (initOptions) => {
@@ -46,6 +47,13 @@ export const AsertoProvider = ({
     try {
       if (asertoClient) {
         setLoading(true);
+        if (identity) {
+          if (headers) {
+            headers.identity = identity;
+          } else {
+            headers = { identity };
+          }
+        }
         await asertoClient.reload(headers);
         setAccessMap(asertoClient.accessMap());
         setLoading(false);
@@ -116,6 +124,8 @@ export const AsertoProvider = ({
         reload,
         resourceMap,
         isLoaded,
+        identity,
+        setIdentity,
         error
       }}
     >

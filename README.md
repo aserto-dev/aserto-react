@@ -44,7 +44,7 @@ ReactDOM.render(
 );
 ```
 
-Use the `useAserto` hook in your components to initialize (`init`), reload the access map (`reload`) or to access its state (`loading`, `accessMap`):
+Use the `useAserto` hook in your components to initialize (`init`), reload the access map (`reload`) or to access its state (`loading`, `accessMap`, `resourceMap`, etc):
 
 ```jsx
 // src/App.js
@@ -87,8 +87,8 @@ function App() {
     return <div>Loading...</div>;
   }
 
-  if (!accessMap) {
-    return <div>Loading...</div>;
+  if (error) {
+    return <div>Error: {error}</div>;
   } else {
     return (
       <div>
@@ -117,8 +117,7 @@ await init({
   throwOnError: true, // true: re-throw errors. false: set error object. defaults to true.
   defaultMap: { // an optional default resource map (default values below)
     visible: true,
-    enabled: true,
-    allowed: false
+    enabled: true
   }
 });
 
@@ -126,11 +125,11 @@ await init({
 console.log(accessMap);
 ```
 
-### reload()
+### reload(headers)
 
-Re-load the access map for a service that exposes it. 
+Re-load the access map for a service that exposes it.  If the `headers` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the access map from the API endpoint.
 
-`init()` must be called before the `reload()`.
+Note: `init()` must be called before `reload()`.
 
 ```js
 const { reload, accessMap } = useAserto();
@@ -139,6 +138,11 @@ await reload();
 // log the access map to the console
 console.log(accessMap);
 ```
+
+### identity and setIdentity
+
+- `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the accessMap API, which can be used to override the Authorization header by the accessMap middleware.
+- `identity` will return the current identity (or undefined if it hasn't been set).
 
 ### resourceMap('path')
 
@@ -152,12 +156,10 @@ The returned map will be in the following format:
   GET: {
     visible: true,
     enabled: false,
-    allowed: false
   },
   POST: {
     visible: true,
     enabled: false,
-    allowed: false
   },
   PUT: {
     //...
@@ -183,7 +185,7 @@ const isUpdateEnabled = resource.PUT.enabled;
 
 // print out access values for each verb on a resource
 for (const verb of ['GET', 'POST', 'PUT', 'DELETE']) {
-  for (const access of ['visible', 'enabled', 'allowed']) {
+  for (const access of ['visible', 'enabled']) {
     console.log(`${verb} ${path} ${access} is ${resource[verb][access]}`);
   }
 }
