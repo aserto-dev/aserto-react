@@ -15,8 +15,8 @@ export const AsertoProvider = ({
   const [identity, setIdentity] = useState();
   const [throwOnError, setThrowOnError] = useState(true);
   const [defaultMap, setDefaultMap] = useState({
-    visible: true,
-    enabled: true
+    visible: false,
+    enabled: false
   });
 
   const init = async (initOptions) => {
@@ -69,28 +69,33 @@ export const AsertoProvider = ({
     }
   }
 
-  const resourceMap = (path) => {
-    if (asertoClient && path) {
-      return asertoClient.resourceMap(path);
-    }
-
-    // no client or path
-    if (throwOnError) {
-      if (!asertoClient) {
-        throw new Error('aserto-react: must call init() before resourceMap()');
-      } 
-      if (!path) {
-        throw new Error('aserto-react: path is a required parameter');
+  const resourceMap = (method, path) => {
+    try {
+      if (asertoClient && method) {
+        return asertoClient.resourceMap(method, path);
       }
-    } else {
-      // return the default map
-      return {
-        GET: defaultMap,
-        PUT: defaultMap,
-        DELETE: defaultMap,
-        POST: defaultMap
+  
+      // no client or path
+      if (throwOnError) {
+        if (!asertoClient) {
+          throw new Error('aserto-react: must call init() before resourceMap()');
+        } 
+        if (!method) {
+          throw new Error('aserto-react: missing required parameter');
+        }
+      } else {
+        // return the default map
+        return defaultMap;
       }
-    }
+    } catch (error) {
+      if (throwOnError) {
+        throw error;
+      }
+      console.error(error);
+      setError(error);
+      setIsLoaded(false);
+      setLoading(false);
+    }      
   }
 
   /*

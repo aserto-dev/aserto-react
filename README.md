@@ -57,6 +57,8 @@ function App() {
     loading,     // true while the state is loading
     isLoaded,    // true if the accessMap was loaded
     error,       // error object (if initOptions.throwOnError is false)
+    identity,    // identity header to send to accessmap call
+    setIdentity, // set the identity header 
     accessMap,   // access map
     resourceMap, // resourceMap() function (see below)
     init,        // init() function (see below)
@@ -65,7 +67,7 @@ function App() {
 
   // the Aserto hook needs a valid access token. 
   // to use Auth0 to return an access token, you can use the following:
-  const { isLoading, error, isAuthenticated, getAccessTokenSilently } = useAuth0();
+  const { isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
   // use an effect to load the Aserto access map 
   useEffect(() => {
@@ -77,11 +79,11 @@ function App() {
     }
 
     // load the access map when Auth0 has finished initializing
-    if (!error && !isLoading && isAuthenticated) {
+    if (!isLoading && isAuthenticated) {
       load();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLoading, isAuthenticated, error]); 
+  }, [isAuthenticated]); 
 
   if (loading) {
     return <div>Loading...</div>;
@@ -116,8 +118,8 @@ await init({
   accessToken: '<VALID ACCESS TOKEN>', // REQUIRED
   throwOnError: true, // true: re-throw errors. false: set error object. defaults to true.
   defaultMap: { // an optional default resource map (default values below)
-    visible: true,
-    enabled: true
+    visible: false,
+    enabled: false
   }
 });
 
@@ -144,29 +146,19 @@ console.log(accessMap);
 - `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the accessMap API, which can be used to override the Authorization header by the accessMap middleware.
 - `identity` will return the current identity (or undefined if it hasn't been set).
 
-### resourceMap('path')
+### resourceMap('method, 'path')
 
-Retrieves the resource map associated with a specific resource.
+Retrieves a map associated with a specific resource.
 
-The `path` argument is in the form `/path/to/resource`. It may contain a `__id` component to indicate an parameter - for example, `/cars/__id`.
+By convention, the `method` argument is an HTTP method (GET, POST, PUT, DELETE), and the `path` argument is in the form `/path/to/resource`. It may contain a `__id` component to indicate an parameter - for example, `/mycars/__id`.
+
+If only the `method` argument is passed in, it is assumed to be a key into the `accessmap` (typically in the form of `METHOD/path/to/resource`).
 
 The returned map will be in the following format: 
 ```js
 {
-  GET: {
-    visible: true,
-    enabled: false,
-  },
-  POST: {
-    visible: true,
-    enabled: false,
-  },
-  PUT: {
-    //...
-  },
-  DELETE: {
-    //...
-  }
+  visible: true,
+  enabled: false,
 }
 ```
 
@@ -175,16 +167,16 @@ Note: `init()` must be called before `resourceMap()`.
 ```js
 const { resourceMap } = useAserto();
 const path = '/api/path';
-const resource = aserto.resourceMap(path));
 
 // use the map to retrieve visibility of an element
-const isVisible = resource.GET.visible;
+const isVisible = aserto.resourceMap('GET', path).visible;
 
 // use the map to determine whether an update operation is enabled
-const isUpdateEnabled = resource.PUT.enabled;
+const isUpdateEnabled = aserto.resourceMap('PUT', path).enabled;
 
 // print out access values for each verb on a resource
 for (const verb of ['GET', 'POST', 'PUT', 'DELETE']) {
+  const resource = aserto.resourceMap(verb, path));
   for (const access of ['visible', 'enabled']) {
     console.log(`${verb} ${path} ${access} is ${resource[verb][access]}`);
   }
