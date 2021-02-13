@@ -11,10 +11,10 @@ export const AsertoProvider = ({
   const [loading, setLoading] = useState(true);
   const [isLoaded, setIsLoaded] = useState(false);
   const [error, setError] = useState();
-  const [accessMap, setAccessMap] = useState();
+  const [displayStateMap, setDisplayStateMap] = useState();
   const [identity, setIdentity] = useState();
   const [throwOnError, setThrowOnError] = useState(true);
-  const [defaultMap, setDefaultMap] = useState({
+  const [defaultDisplayState, setDefaultDisplayState] = useState({
     visible: false,
     enabled: false
   });
@@ -24,13 +24,13 @@ export const AsertoProvider = ({
       if (initOptions && initOptions.throwOnError == false) {
         setThrowOnError(false);
       }
-      if (initOptions && initOptions.defaultMap) {
-        setDefaultMap(initOptions.defaultMap);
+      if (initOptions && initOptions.defaultDisplayState) {
+        setDefaultDisplayState(initOptions.defaultDisplayState);
       }
       setLoading(true);
       const asertoFromHook = await createAsertoClient(initOptions);
       setAsertoClient(asertoFromHook);
-      setAccessMap(asertoFromHook.accessMap());
+      setDisplayStateMap(asertoFromHook.displayStateMap());
       setIsLoaded(true);      
       setLoading(false);
     } catch (error) {
@@ -55,7 +55,7 @@ export const AsertoProvider = ({
           }
         }
         await asertoClient.reload(headers);
-        setAccessMap(asertoClient.accessMap());
+        setDisplayStateMap(asertoClient.displayStateMap());
         setLoading(false);
       }
     } catch (error) {
@@ -69,23 +69,23 @@ export const AsertoProvider = ({
     }
   }
 
-  const resourceMap = (method, path) => {
+  const getDisplayState = (method, path) => {
     try {
       if (asertoClient && method) {
-        return asertoClient.resourceMap(method, path);
+        return asertoClient.getDisplayState(method, path);
       }
   
       // no client or path
       if (throwOnError) {
         if (!asertoClient) {
-          throw new Error('aserto-react: must call init() before resourceMap()');
+          throw new Error('aserto-react: must call init() before getDisplayState()');
         } 
         if (!method) {
           throw new Error('aserto-react: missing required parameter');
         }
       } else {
-        // return the default map
-        return defaultMap;
+        // return the default display state
+        return defaultDisplayState;
       }
     } catch (error) {
       if (throwOnError) {
@@ -107,12 +107,12 @@ export const AsertoProvider = ({
   // eslint-disable-next-line react-hooks/exhaustive-deps  
   }, []);
 
-  const loadAccessMapCallback = useCallback(() => {
+  const loadDisplayStateMapCallback = useCallback(() => {
     async function callLoad() {
       return load();
     }
     if (!asertoClient) {
-      throw new Error('aserto-react: must call init() before loadAccessMap()');
+      throw new Error('aserto-react: must call init() before loadDisplayStateMap()');
     } else {
       return callLoad();    
     }
@@ -124,10 +124,10 @@ export const AsertoProvider = ({
     <AsertoContext.Provider
       value={{
         loading,
-        accessMap,
+        displayStateMap,
         init,
         reload,
-        resourceMap,
+        getDisplayState,
         isLoaded,
         identity,
         setIdentity,

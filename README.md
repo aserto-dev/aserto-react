@@ -44,7 +44,7 @@ ReactDOM.render(
 );
 ```
 
-Use the `useAserto` hook in your components to initialize (`init`), reload the access map (`reload`) or to access its state (`loading`, `accessMap`, `resourceMap`, etc):
+Use the `useAserto` hook in your components to initialize (`init`), reload the display state map (`reload`) or to access its state (`loading`, `displayStateMap`, `getDisplayState`, etc):
 
 ```jsx
 // src/App.js
@@ -54,22 +54,22 @@ import { useAuth0 } from '@auth0/auth0-react'
 
 function App() {
   const {
-    loading,     // true while the state is loading
-    isLoaded,    // true if the accessMap was loaded
-    error,       // error object (if initOptions.throwOnError is false)
-    identity,    // identity header to send to accessmap call
-    setIdentity, // set the identity header 
-    accessMap,   // access map
-    resourceMap, // resourceMap() function (see below)
-    init,        // init() function (see below)
-    reload       // reload() function (see below)
+    loading,         // true while the state is loading
+    isLoaded,        // true if the displayStateMap was loaded
+    error,           // error object (if initOptions.throwOnError is false)
+    identity,        // identity header to send to displaystatemap call
+    setIdentity,     // set the identity header 
+    displayStateMap, // display state map
+    getDisplayState, // getDisplayState() function (see below)
+    init,            // init() function (see below)
+    reload           // reload() function (see below)
   } = useAserto();
 
   // the Aserto hook needs a valid access token. 
   // to use Auth0 to return an access token, you can use the following:
   const { isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  // use an effect to load the Aserto access map 
+  // use an effect to load the Aserto display state map 
   useEffect(() => {
     async function load() {
       const token = await getAccessTokenSilently();
@@ -78,7 +78,7 @@ function App() {
       }
     }
 
-    // load the access map when Auth0 has finished initializing
+    // load the display state map when Auth0 has finished initializing
     if (!isLoading && isAuthenticated) {
       load();
     }
@@ -95,8 +95,8 @@ function App() {
     return (
       <div>
         { 
-          // display the access map as a string 
-          accessMap 
+          // output the display state map as a string 
+          displayStateMap 
         }
       </div>
     );
@@ -111,48 +111,48 @@ export default App
 Initialize the Aserto client.
 
 ```js
-const { init, accessMap } = useAserto();
+const { init, displayStateMap } = useAserto();
 await init({
   serviceUrl: 'http://service-url', // defaults to windows.location.origin
-  endpointName: '/__accessmap', // defaults to '/__accessmap'
+  endpointName: '/__displaystatemap', // defaults to '/__displaystatemap'
   accessToken: '<VALID ACCESS TOKEN>', // REQUIRED
   throwOnError: true, // true: re-throw errors. false: set error object. defaults to true.
-  defaultMap: { // an optional default resource map (default values below)
+  defaultDisplayState: { // an optional default display state (default values below)
     visible: false,
     enabled: false
   }
 });
 
-// log the access map to the console
-console.log(accessMap);
+// log the display state map to the console
+console.log(displayStateMap);
 ```
 
 ### reload(headers)
 
-Re-load the access map for a service that exposes it.  If the `headers` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the access map from the API endpoint.
+Re-load the display state map for a service that exposes it.  If the `headers` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the display state map from the API endpoint.
 
 Note: `init()` must be called before `reload()`.
 
 ```js
-const { reload, accessMap } = useAserto();
+const { reload, displayStateMap } = useAserto();
 await reload();
 
-// log the access map to the console
-console.log(accessMap);
+// log the display state map to the console
+console.log(displayStateMap);
 ```
 
 ### identity and setIdentity
 
-- `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the accessMap API, which can be used to override the Authorization header by the accessMap middleware.
+- `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the displayStateMap API, which can be used to override the Authorization header by the displayStateMap middleware.
 - `identity` will return the current identity (or undefined if it hasn't been set).
 
-### resourceMap('method, 'path')
+### getDisplayState('method, 'path')
 
-Retrieves a map associated with a specific resource.
+Retrieves a displayState associated with a specific resource.
 
 By convention, the `method` argument is an HTTP method (GET, POST, PUT, DELETE), and the `path` argument is in the form `/path/to/resource`. It may contain a `__id` component to indicate an parameter - for example, `/mycars/__id`.
 
-If only the `method` argument is passed in, it is assumed to be a key into the `accessmap` (typically in the form of `METHOD/path/to/resource`).
+If only the `method` argument is passed in, it is assumed to be a key into the `displayStateMap` (typically in the form of `METHOD/path/to/resource`).
 
 The returned map will be in the following format: 
 ```js
@@ -162,23 +162,23 @@ The returned map will be in the following format:
 }
 ```
 
-Note: `init()` must be called before `resourceMap()`.
+Note: `init()` must be called before `getDisplayState()`.
 
 ```js
-const { resourceMap } = useAserto();
+const { getDisplayState } = useAserto();
 const path = '/api/path';
 
-// use the map to retrieve visibility of an element
-const isVisible = aserto.resourceMap('GET', path).visible;
+// retrieve visibility of an element
+const isVisible = aserto.getDisplayState('GET', path).visible;
 
-// use the map to determine whether an update operation is enabled
-const isUpdateEnabled = aserto.resourceMap('PUT', path).enabled;
+// determine whether an update operation is enabled
+const isUpdateEnabled = aserto.getDisplayState('PUT', path).enabled;
 
-// print out access values for each verb on a resource
+// print out display state values for each verb on a resource
 for (const verb of ['GET', 'POST', 'PUT', 'DELETE']) {
-  const resource = aserto.resourceMap(verb, path));
-  for (const access of ['visible', 'enabled']) {
-    console.log(`${verb} ${path} ${access} is ${resource[verb][access]}`);
+  const resource = aserto.getDisplayState(verb, path));
+  for (const value of ['visible', 'enabled']) {
+    console.log(`${verb} ${path} ${value} is ${resource[verb][value]}`);
   }
 }
 ```
