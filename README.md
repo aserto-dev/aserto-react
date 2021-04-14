@@ -23,7 +23,7 @@ yarn add @aserto/aserto-react
 Configure the SDK by wrapping your application in `AsertoProvider`. If using in conjunction with the `Auth0Provider`, `AsertoProvider` should be nested inside of it.
 
 ```jsx
-// src/index.js
+// src/index.tsx
 import React from 'react'
 import ReactDOM from 'react-dom'
 import { AsertoProvider } from '@aserto/aserto-react'
@@ -58,18 +58,18 @@ function App() {
     isLoaded,        // true if the displayStateMap was loaded
     error,           // error object (if initOptions.throwOnError is false)
     identity,        // identity header to send to displaystatemap call
-    setIdentity,     // set the identity header 
+    setIdentity,     // set the identity header
     displayStateMap, // display state map
     getDisplayState, // getDisplayState() function (see below)
     init,            // init() function (see below)
     reload           // reload() function (see below)
   } = useAserto();
 
-  // the Aserto hook needs a valid access token. 
+  // the Aserto hook needs a valid access token.
   // to use Auth0 to return an access token, you can use the following:
   const { isLoading, isAuthenticated, getAccessTokenSilently } = useAuth0();
 
-  // use an effect to load the Aserto display state map 
+  // use an effect to load the Aserto display state map
   useEffect(() => {
     async function load() {
       const token = await getAccessTokenSilently();
@@ -83,7 +83,7 @@ function App() {
       load();
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isAuthenticated]); 
+  }, [isAuthenticated]);
 
   if (loading) {
     return <div>Loading...</div>;
@@ -94,13 +94,13 @@ function App() {
   } else {
     return (
       <div>
-        { 
-          // output the display state map as a string 
-          displayStateMap 
+        {
+          // output the display state map as a string
+          displayStateMap
         }
       </div>
     );
-  } 
+  }
 }
 
 export default App
@@ -154,7 +154,7 @@ By convention, the `method` argument is an HTTP method (GET, POST, PUT, DELETE),
 
 If only the `method` argument is passed in, it is assumed to be a key into the `displayStateMap` (typically in the form of `METHOD/path/to/resource`).
 
-The returned map will be in the following format: 
+The returned map will be in the following format:
 ```js
 {
   visible: true,
