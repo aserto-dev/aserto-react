@@ -94,7 +94,7 @@ export const AsertoProvider = ({
     }
   }
 
-  const getDisplayState = (method: string, path: string) => {
+  const getDisplayState = (method: string, path?: string) => {
     try {
       if (asertoClient && method) {
         return asertoClient.getDisplayState(method, path)
