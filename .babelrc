@@ -1,0 +1,21 @@
+{
+  "presets": [
+    ["@babel/preset-env", {
+      "targets": {"chrome": "58", "ie": "11"},
+      "useBuiltIns": false,
+      "shippedProposals": true
+    }],
+    "@babel/preset-react",
+    "@babel/preset-typescript"
+  ],
+  "plugins": [
+    ["@babel/plugin-transform-runtime", {
+      "absoluteRuntime": false,
+      "corejs": false,
+      "helpers": true,
+      "regenerator": true,
+      "useESModules": false,
+      "version": "^7.8.3"
+    }]
+  ]
+}
