@@ -106,9 +106,11 @@ function App() {
 export default App
 ```
 
-### init()
+### init(options, body)
 
-Initialize the Aserto client.
+Initialize the Aserto client using the (required) `options` map.
+
+If the `body` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the display state map from the API endpoint (and used as the resource context for the `decisiontree` API call).
 
 ```js
 const { init, displayStateMap } = useAserto();
@@ -127,9 +129,13 @@ await init({
 console.log(displayStateMap);
 ```
 
-### reload(headers)
+### reload(body, headers)
 
-Re-load the display state map for a service that exposes it.  If the `headers` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the display state map from the API endpoint.
+Re-load the display state map for a service that exposes it.  
+
+If the `body` parameter is passed in, it is passed through to the `AsertoClient` instance that will retrieve the display state map from the API endpoint (and used as the resource context for the `decisiontree` API call).
+
+If the `headers` parameter is passed in, it is likewise passed through to the `AsertoClient` instance that will retrieve the display state map from the API endpoint.
 
 Note: `init()` must be called before `reload()`.
 
@@ -143,7 +149,7 @@ console.log(displayStateMap);
 
 ### identity and setIdentity
 
-- `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the displayStateMap API, which can be used to override the Authorization header by the displayStateMap middleware.
+- `setIdentity` can be used to set the identity to pass as an `identity` HTTP header.  It will override an `identity` header that is passed into `reload(headers)`.  This is the preferred way to send an identity to the displayStateMap API, which can be used to override the Authorization header by the `displayStateMap` middleware in the `express-jwt-aserto` Node.js SDK.
 - `identity` will return the current identity (or undefined if it hasn't been set).
 
 ### getDisplayState('method, 'path')

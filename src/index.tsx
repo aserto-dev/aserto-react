@@ -5,9 +5,9 @@ export type AsertoClient = {
   token: string,
   endpoint: string,
   service: string,
-  reload: (headers: any) => void,
+  reload: (body?: any, headers?: any) => void,
   displayStateMap: () => string | unknown
-  getDisplayState: (method: string, path: string) => string | unknown
+  getDisplayState: (method: string, path?: string) => string | unknown
 }
 
 interface DefaultDisplayState {
@@ -44,7 +44,7 @@ export const AsertoProvider = ({
     enabled: false
   })
 
-  const init = async (initOptions: InitOptions) => {
+  const init = async (initOptions: InitOptions, body?: any) => {
     try {
       if (initOptions && initOptions.throwOnError == false) {
         setThrowOnError(false)
@@ -53,7 +53,7 @@ export const AsertoProvider = ({
         setDefaultDisplayState(initOptions.defaultDisplayState)
       }
       setLoading(true)
-      const asertoFromHook = await createAsertoClient(initOptions)
+      const asertoFromHook = await createAsertoClient(initOptions, body)
       setAsertoClient(asertoFromHook)
       setDisplayStateMap(asertoFromHook.displayStateMap())
       setIsLoaded(true)
@@ -68,7 +68,7 @@ export const AsertoProvider = ({
     }
   }
 
-  const reload = async (headers) => {
+  const reload = async (body?: any, headers?: any) => {
     try {
       if (asertoClient) {
         setLoading(true)
@@ -79,7 +79,7 @@ export const AsertoProvider = ({
             headers = { identity }
           }
         }
-        await asertoClient.reload(headers)
+        await asertoClient.reload(body, headers)
         setDisplayStateMap(asertoClient.displayStateMap())
         setLoading(false)
       }
