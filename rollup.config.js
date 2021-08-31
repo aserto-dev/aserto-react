@@ -3,8 +3,6 @@ import peerDepsExternal from 'rollup-plugin-peer-deps-external'
 import { nodeResolve } from '@rollup/plugin-node-resolve'
 import pkg from './package.json'
 import { babel } from '@rollup/plugin-babel'
-import postcss from 'rollup-plugin-postcss'
-import image from '@rollup/plugin-image'
 import commonjs from '@rollup/plugin-commonjs'
 import multiInput from 'rollup-plugin-multi-input'
 
@@ -34,42 +32,7 @@ const config = {
     typescript(),
     peerDepsExternal(),
     // Convert CommonJS modules to ES6
-    commonjs({
-      include: 'node_modules/**',
-      // This was required to fix some random errors while building
-      namedExports: {
-        'node_modules/react-dom/index.js': ['findDOMNode', 'createPortal'],
-        'node_modules/react/index.js': [
-          'Component',
-          'PureComponent',
-          'Fragment',
-          'cloneElement',
-          'forwardRef',
-          'createElement',
-          'createFactory',
-          'Children',
-          'createContext',
-          'createRef',
-          'isValidElement',
-          'lazy',
-          'memo',
-          'Suspense',
-          'Profiler',
-          'StrictMode',
-          'useContext',
-          'useDebugValue',
-          'useImperativeHandle',
-          'useMemo',
-          'useReducer',
-          'useRef',
-          'useState',
-          'useLayoutEffect',
-          'useEffect',
-          'useCallback',
-          'version',
-        ],
-      },
-    }),
+    commonjs({ include: 'node_modules/**' }),
     external(),
     babel({
       babelHelpers: 'runtime',
@@ -79,11 +42,6 @@ const config = {
       babelrc: true,
     }),
     nodeResolve({ extensions }),
-    postcss({
-      dest: './dist/styles.css',
-      plugins: [],
-    }),
-    image(),
     multiInput(),
   ],
   external: makeExternalPredicate(
