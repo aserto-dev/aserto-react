@@ -27,7 +27,7 @@
     "react-dom": "^7.0.2"
   },
   "dependencies": {
-    "@aserto/aserto-spa-js": "^0.2.1"
+    "@aserto/aserto-spa-js": "^0.2.2"
   },
   "devDependencies": {
     "@aserto/ts-linting-configs": "^1.0.7",

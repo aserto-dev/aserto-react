@@ -4,7 +4,7 @@ import createAsertoClient from '@aserto/aserto-spa-js'
 export type AsertoClient = {
   token: string
   endpoint: string
-  service: string
+  service: URL
   reload: (body?: any, headers?: any) => Promise<void>
   displayStateMap: () => unknown
   getDisplayState: (method: string, path?: string, policyRoot?: string) => unknown
@@ -16,7 +16,7 @@ interface DefaultDisplayState {
 }
 
 export type InitOptions = {
-  serviceUrl?: string
+  serviceUrl?: URL
   endpointName?: string
   accessToken: string
   throwOnError?: boolean
