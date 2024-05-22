@@ -5,7 +5,7 @@ export type AsertoClient = {
   token: string
   endpoint: string
   service: URL
-  reload: (body?: any, headers?: any) => Promise<void>
+  reload: (body?: BodyInit, headers?: HeadersInit) => Promise<void>
   displayStateMap: () => unknown
   getDisplayState: (method: string, path?: string, policyRoot?: string) => unknown
 }
@@ -43,9 +43,9 @@ export const AsertoProvider = ({ children }) => {
     enabled: false,
   })
 
-  const init = useCallback(async (initOptions: InitOptions, body?: any) => {
+  const init = useCallback(async (initOptions: InitOptions, body?: BodyInit) => {
     try {
-      if (initOptions && initOptions.throwOnError == false) {
+      if (initOptions && initOptions.throwOnError === false) {
         setThrowOnError(false)
       }
       if (initOptions && initOptions.defaultDisplayState) {
@@ -68,13 +68,13 @@ export const AsertoProvider = ({ children }) => {
   }, [])
 
   const reload = useCallback(
-    async (body?: any, headers?: any) => {
+    async (body?: BodyInit, headers?: HeadersInit) => {
       try {
         if (asertoClient) {
           setLoading(true)
           if (identity) {
             if (headers) {
-              headers.identity = identity
+              headers['identity'] = identity
             } else {
               headers = { identity }
             }
