@@ -25,8 +25,8 @@
   "author": "Aserto",
   "license": "Apache-2.0",
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0",
+    "react-dom": "^16.8.0 || ^17.0.0 || ^18.0.0"
   },
   "dependencies": {
     "@aserto/aserto-spa-js": "^0.2.2"
