@@ -19,7 +19,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@aserto/aserto-react@workspace:."
   dependencies:
-    "@aserto/aserto-spa-js": "npm:^0.2.2"
+    "@aserto/aserto-spa-js": "npm:^0.3.0"
     "@aserto/ts-linting-configs": "npm:^2.7.0"
     "@babel/core": "npm:^7.13.8"
     "@babel/plugin-transform-runtime": "npm:^7.13.9"
@@ -58,10 +58,10 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@aserto/aserto-spa-js@npm:^0.2.2":
-  version: 0.2.2
-  resolution: "@aserto/aserto-spa-js@npm:0.2.2"
-  checksum: 10/ea78311d4b7845813276e57aea4a19bdf9142fe1c56f73ccc295ed2a68613a8b0ed40105f0432fe773036dbe4255ebb1f5f564b6cc88e26410be0fe98fec0238
+"@aserto/aserto-spa-js@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@aserto/aserto-spa-js@npm:0.3.0"
+  checksum: 10/b82207981f071e045224e1ee74b879258033a9264af4bc152af9b25a53994164f9af3ad3ed30640bca549700d9facfdad5d690094e70b9327941d6bebd72de62
   languageName: node
   linkType: hard
 
