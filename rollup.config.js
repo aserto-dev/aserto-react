@@ -1,17 +1,17 @@
+import multiInput from 'rollup-plugin-multi-input'
 import external from 'rollup-plugin-peer-deps-external'
 import peerDepsExternal from 'rollup-plugin-peer-deps-external'
-import { nodeResolve } from '@rollup/plugin-node-resolve'
 import { babel } from '@rollup/plugin-babel'
 import commonjs from '@rollup/plugin-commonjs'
-import multiInput from 'rollup-plugin-multi-input'
-
-
+import { nodeResolve } from '@rollup/plugin-node-resolve'
 import typescript from '@rollup/plugin-typescript'
 
 import pkg from './package.json'
 
 const makeExternalPredicate = (externalArr) => {
-  if (externalArr.length === 0) return () => false
+  if (externalArr.length === 0) {
+    return () => false
+  }
   return (id) => new RegExp(`^(${externalArr.join('|')})($|/)`).test(id)
 }
 const extensions = ['.js', '.jsx', '.ts', '.tsx']
