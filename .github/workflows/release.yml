@@ -38,5 +38,4 @@ jobs:
             ${{ runner.os }}-yarn-cache-
 
       - run: yarn install --immutable
-      - run: yarn prepublishOnly
       - run: yarn npm publish --access public

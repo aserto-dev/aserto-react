@@ -6,7 +6,7 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint src --max-warnings=0",
-    "prepublishOnly": "cross-env NODE_ENV=production rollup -c"
+    "prepack": "cross-env NODE_ENV=production rollup -c"
   },
   "repository": {
     "type": "git",
