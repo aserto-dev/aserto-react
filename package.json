@@ -1,12 +1,12 @@
 {
   "name": "@aserto/aserto-react",
-  "version": "0.4.0",
+  "version": "0.4.2",
   "description": "Aserto React SDK",
   "main": "dist/index.js",
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint src --max-warnings=0",
-    "prepublishOnly": "cross-env NODE_ENV=production rollup -c"
+    "prepack": "cross-env NODE_ENV=production rollup -c"
   },
   "repository": {
     "type": "git",
